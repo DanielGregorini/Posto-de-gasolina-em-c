@@ -2,9 +2,24 @@
 #include <stdlib.h> 
 #include <string.h>
 #include <stdbool.h>
-#include "header.h"
+#include <locale.h>
+#include <windows.h>
+#include "funcoes.c"
+
+#ifdef __linux__
+  #include <windows.h>
+#elif _WIN32  
+  #include <unistd.h>
+#else
+#endif
 
 int main(void){
+
+
+  //muda a lingua do console para portugues
+  UINT CPAGE_UTF8 = 65001;
+  UINT CPAGE_DEFAULT = GetConsoleOutputCP();
+  SetConsoleOutputCP(CPAGE_UTF8);
 
   //variaveis
   float gasolinaComum, gasolinaAd, etanol; //preços
@@ -25,13 +40,13 @@ int main(void){
   
   //preços e fila
   do{
-    printf("\nInforme o preço da gasolina comum: R$:");
+    printf("\nInforme o preço da gasolina comum: R$");
     scanf("%f", &gasolinaComum);
     ll();
-    printf("\nInforme o preço da gasolina aditivada: R$:");
+    printf("\nInforme o preço da gasolina aditivada: R$");
     scanf("%f", &gasolinaAd);
     ll();
-    printf("\nInforme o preço do etanol:  R$:");
+    printf("\nInforme o preço do etanol:  R$");
     scanf("%f", &etanol);
     ll();
     printf("\nInforme o tamanho da fila de carros: ");
@@ -45,7 +60,7 @@ int main(void){
   } while(gasolinaComum <= 0 || gasolinaAd <= 0 || etanol <= 0 || fila <=0); 
 
   
- //litros na bomba
+  //combustível na bomba
   do{
     printf("\nInforme quantos litros têm no bomba de gasolina comum: ");
     scanf("%f", &bombaGasolinaComum);
@@ -56,6 +71,7 @@ int main(void){
     printf("\nInforme quantos litros têm na bomba de etanol: ");
     scanf("%f", &bombaEtanol);
     ll();
+
     //verifica se os valores dos combustiveis sao negativos
     if (bombaGasolinaComum <= 0 || bombaGasolinaComum <= 0 || bombaEtanol <= 0){
       printf("Algum valor foi informado errado, por favor corrija\n");
@@ -67,53 +83,54 @@ int main(void){
 
   //menu principal
   while (menu != 6) {
-    
-     //printf("\nGC: R$%.2f, GA: R$%.2f, ET: R$%.2f.\n", gasolinaComum, gasolinaAd, etanol);
-     printf("MENU PRINCIPAL:\n\n");
-     printf("1-Adicionar um carro na fila.\t\t\tFila:%d/%d\n",nCarrosFila, fila);
-     printf("2-Abastecer carro.\n");
-     printf("3-Chamar o próximo.\n");
-     printf("4-Relatórios.\n");
-     printf("5-Adicionar combustível nas bombas.\n");
-     printf("6-Encerrar. \n");
-     scanf("%d", &menu);
+    //printf("Tanque de gasolina comum: %.2f litros, Tanque de gasolina: aditivada: %.2f litros, Tanque de etanol: %.2f litros.\n\n\n",bombaGasolinaComum, bombaGasolinaAd, bombaEtanol);
+    // printf("\nGC: R$%.2f, GA: R$%.2f, ET: R$%.2f.\n", gasolinaComum, gasolinaAd, etanol);
+    printf("MENU PRINCIPAL:\n\n");
+    printf("1-Adicionar um carro na fila.\t\t\tFila:%d/%d\n",nCarrosFila, fila);
+    printf("2-Abastecer carro.\n");
+    printf("3-Chamar o próximo.\n");
+    printf("4-Relatórios.\n");
+    printf("5-Adicionar combustível nas bombas.\n");
+    printf("6-Encerrar. \n");
+    scanf("%d", &menu);
+
 
     switch (menu){
- 
       case (1):
         addCarro(carros, &nCarrosFila, fila, gasolinaComum, gasolinaAd, etanol, &bombaGasolinaComum, &bombaGasolinaAd, &bombaEtanol);
         break;
-      
-      case (2):
+
+      case (2): 
         abastecer(carros, &nCarrosFila, fila, &tLitrosVendidos, &tVendas, &tCarrosAtendidos, &tLitrosVendidosGC, &tVendasGC, &tLitrosVendidosGA, &tVendasGA, &tLitrosVendidosET, &tVendasET, &carroAbastecido);
-        break;
-      
+        break;   
+
       case (3):
         chamarCarro(&carroAbastecido, nCarrosFila);
-        break;
-      
+        break;  
+
       case (4): 
         relatorios(carros, nCarrosFila, bombaGasolinaComum, bombaGasolinaAd, bombaEtanol, tLitrosVendidos, tVendas, tCarrosAtendidos, tLitrosVendidosGC, tVendasGC, tLitrosVendidosGA, tVendasGA, tLitrosVendidosET, tVendasET);
-        break;
-      
+        break;   
+
       case (5):
         addCombustivel(&bombaGasolinaComum, &bombaGasolinaAd, &bombaEtanol);
-        
         break;
 
       case (6):
-        printf("Você selecionou a opção 6: Encerrar\n\n");
-        
+        ll();
+        printf("Fechando o programa...\n\n");
         break;
-      
+        
       default:
         printf("Opção invalida!!\n\n");
-        sleep(1);
+        pausa();
         ll();
         break;
         }
     }
 
   free(carros);
+  SetConsoleOutputCP(CPAGE_DEFAULT);
   return 0;
+  
 }
