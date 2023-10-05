@@ -3,5 +3,3 @@
 
 
   Projeto da matéria de programação estruturada - UTFPR Medianeira.
- 
- https://replit.com/@OparinBr14/projeto-final-github?v=1
